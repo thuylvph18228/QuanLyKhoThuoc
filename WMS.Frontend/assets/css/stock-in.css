@@ -2,6 +2,8 @@
 
 .stock-page {
   height: calc(100vh - 140px);
+  display: flex;
+  flex-direction: column;
 }
 
 /* ================= TOOLBAR ================= */
@@ -21,8 +23,8 @@
 }
 
 /* ================= TABLE ================= */
-
 .table-wrapper {
+  flex: 1;
   overflow: auto;
   max-height: calc(100vh - 300px);
 }
@@ -54,11 +56,16 @@ tbody tr.selected {
 }
 
 /* ================= PAGINATION ================= */
-
 .pagination-fixed {
+  position: sticky; /* 🔥 cố định trong card */
+  bottom: 0;
+  background: #fff;
+  padding: 8px 0;
+  border-top: 1px solid #e5e7eb;
+
   display: flex;
-  justify-content: center;
-  margin-top: 10px;
+  justify-content: space-between;
+  align-items: center;
 }
 
 #stockin-pagination {

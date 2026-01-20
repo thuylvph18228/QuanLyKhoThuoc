@@ -31,6 +31,8 @@ async function navigate(page, el) {
   const content = document.getElementById("content");
 
   try {
+    // load CSS page
+    loadPageCss(page);
     // load HTML
     const res = await fetch(`pages/${page}.html`);
     content.innerHTML = await res.text();

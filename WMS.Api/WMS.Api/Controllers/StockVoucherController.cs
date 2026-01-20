@@ -175,5 +175,95 @@ namespace WMS.Api.Controllers
 
             stock.Quantity -= qty;
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetDetail(int id)
+        {
+            var voucher = await _db.StockVouchers
+                .Include(x => x.Details)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (voucher == null)
+                return NotFound();
+
+            var dto = new StockVoucherViewDto
+            {
+                Id = voucher.Id,
+                VoucherCode = voucher.VoucherCode,
+                VoucherDate = voucher.VoucherDate,
+                ToWarehouseId = voucher.ToWarehouseId,
+                Status = voucher.Status,
+                Note = voucher.Note,
+                Details = voucher.Details.Select(d => new StockVoucherDetailDto
+                {
+                    ProductId = d.ProductId,
+                    Quantity = d.Quantity,
+                    Price = d.Price
+                }).ToList()
+            };
+
+            return Ok(dto);
+        }
+
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, StockVoucherUpdateDto dto)
+        {
+            var voucher = await _db.StockVouchers
+                .Include(x => x.Details)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (voucher == null)
+                return NotFound();
+
+            if (voucher.Status != "DRAFT")
+                return BadRequest("Chỉ được sửa phiếu ở trạng thái DRAFT");
+
+            voucher.VoucherDate = dto.VoucherDate;
+            voucher.ToWarehouseId = dto.ToWarehouseId;
+            voucher.Note = dto.Note;
+
+            // Xóa chi tiết cũ
+            _db.StockVoucherDetails.RemoveRange(voucher.Details);
+
+            // Thêm chi tiết mới
+            voucher.Details = dto.Details.Select(d => new StockVoucherDetail
+            {
+                ProductId = d.ProductId,
+                Quantity = d.Quantity,
+                Price = d.Price
+            }).ToList();
+
+            await _db.SaveChangesAsync();
+
+            return Ok();
+        }
+
+
+        [HttpPost("{id}/cancel-approve")]
+        public async Task<IActionResult> CancelApprove(int id)
+        {
+            var voucher = await _db.StockVouchers
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (voucher == null)
+                return NotFound();
+
+            if (voucher.Status != "APPROVED")
+                return BadRequest("Phiếu chưa được duyệt");
+
+            // ⚠ hiện tại chưa có dữ liệu để kiểm tra đã dùng tồn hay chưa
+            // → chỉ cho phép hủy duyệt về DRAFT
+
+            voucher.Status = "DRAFT";
+            voucher.ApprovedAt = null;
+            voucher.ApprovedBy = null;
+
+            await _db.SaveChangesAsync();
+
+            return Ok();
+        }
+
+
     }
 }

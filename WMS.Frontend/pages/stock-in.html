@@ -8,12 +8,37 @@
         Thêm phiếu
       </button>
       <button
+        class="btn btn-warning"
+        onclick="openEditStockIn()"
+        id="btnEdit"
+        disabled
+      >
+        Sửa
+      </button>
+
+      <button
+        class="btn btn-secondary"
+        onclick="openViewStockIn()"
+        id="btnView"
+        disabled
+      >
+        Xem
+      </button>
+      <button
         class="btn btn-success"
         onclick="approveStockIn()"
         id="btnApprove"
         disabled
       >
         Duyệt
+      </button>
+      <button
+        class="btn btn-danger"
+        onclick="cancelApproveStockIn()"
+        id="btnCancelApprove"
+        disabled
+      >
+        Hủy duyệt
       </button>
     </div>
 
@@ -50,7 +75,6 @@
 <div id="stockInModal" class="modal hidden">
   <div class="modal-content large">
     <h3>Phiếu nhập kho</h3>
-
     <!-- HEADER -->
     <div class="form-grid">
       <div>
@@ -84,8 +108,14 @@
     <button class="btn btn-light" onclick="addDetailRow()">+ Thêm dòng</button>
 
     <div class="modal-actions">
-      <button class="btn btn-primary" onclick="saveStockIn()">Lưu</button>
-      <button class="btn" onclick="closeStockIn()">Đóng</button>
+      <!-- <button class="btn btn-primary btn-save" onclick="saveStockIn()">
+        Lưu
+      </button>
+      <button class="btn" onclick="closeStockIn()">Đóng</button> -->
+      <button class="btn btn-primary btn-save" onclick="saveStockIn()">
+        Lưu
+      </button>
+      <button class="btn btn-secondary" onclick="closeStockIn()">Đóng</button>
     </div>
   </div>
 </div>

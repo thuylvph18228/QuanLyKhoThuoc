@@ -94,7 +94,12 @@
 
     row.classList.add("selected");
     selectedStockIn = v;
+
     document.getElementById("btnApprove").disabled = v.status !== "DRAFT";
+    document.getElementById("btnEdit").disabled = v.status !== "DRAFT";
+    document.getElementById("btnCancelApprove").disabled =
+      v.status !== "APPROVED";
+    document.getElementById("btnView").disabled = false;
   }
 
   /* ================= ADD ================= */
@@ -104,6 +109,59 @@
     document.getElementById("detail-body").innerHTML = "";
     addDetailRow();
     document.getElementById("stockInModal").classList.remove("hidden");
+  }
+  // EDIT
+  function openEditStockIn() {
+    if (!selectedStockIn) {
+      showToast("Vui lòng chọn phiếu cần sửa", "warning");
+      return;
+    }
+
+    if (selectedStockIn.status !== "DRAFT") {
+      showToast("Chỉ được sửa phiếu ở trạng thái DRAFT", "warning");
+      return;
+    }
+
+    // fill header
+    document.getElementById("voucherDate").value =
+      selectedStockIn.voucherDate.substring(0, 10);
+    document.getElementById("toWarehouse").value =
+      selectedStockIn.toWarehouseId ?? "";
+    document.getElementById("note").value = selectedStockIn.note ?? "";
+
+    // load chi tiết từ BE
+    loadStockInDetails(selectedStockIn.id);
+
+    document.getElementById("stockInModal").classList.remove("hidden");
+  }
+  // LOAD CHI TIẾT PHIẾU
+  async function loadStockInDetails(id) {
+    const res = await fetchData(`${API_BASE_URL}/stock-vouchers/${id}`);
+
+    const tbody = document.getElementById("detail-body");
+    tbody.innerHTML = "";
+
+    res.details.forEach((d) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+      <td>
+        <select class="product">
+          ${products
+            .map(
+              (p) =>
+                `<option value="${p.id}" ${
+                  p.id === d.productId ? "selected" : ""
+                }>${p.name}</option>`,
+            )
+            .join("")}
+        </select>
+      </td>
+      <td><input type="number" class="qty" value="${d.quantity}" /></td>
+      <td><input type="number" class="price" value="${d.price}" /></td>
+      <td><button onclick="this.closest('tr').remove()">✖</button></td>
+    `;
+      tbody.appendChild(tr);
+    });
   }
 
   /* ================= DETAILS ================= */
@@ -138,21 +196,31 @@
     );
 
     const payload = {
-      voucherType: "IN",
       voucherDate: document.getElementById("voucherDate").value,
       toWarehouseId: Number(document.getElementById("toWarehouse").value),
       note: document.getElementById("note").value,
       details,
     };
 
-    await fetchData(`${API_BASE_URL}/stock-vouchers`, {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+    if (selectedStockIn) {
+      await fetchData(`${API_BASE_URL}/stock-vouchers/${selectedStockIn.id}`, {
+        method: "PUT",
+        body: JSON.stringify(payload),
+      });
+      showToast("Cập nhật phiếu nhập thành công");
+    } else {
+      await fetchData(`${API_BASE_URL}/stock-vouchers`, {
+        method: "POST",
+        body: JSON.stringify({
+          ...payload,
+          voucherType: "IN",
+        }),
+      });
+      showToast("Tạo phiếu nhập thành công");
+    }
 
     closeStockIn();
     loadStockIns();
-    showToast("Tạo phiếu nhập thành công");
   }
 
   /* ================= APPROVE ================= */
@@ -178,9 +246,93 @@
     renderStockIns();
   }
 
+  // XEM CHI TIẾT PHIẾU NHẬP
+  async function openViewStockIn() {
+    if (!selectedStockIn) return;
+
+    const data = await fetchData(
+      `${API_BASE_URL}/stock-vouchers/${selectedStockIn.id}`,
+    );
+    fillStockInModal(data, true);
+  }
+
+  // NẠP DỮ LIỆU LÊN MODAL
+  function fillStockInModal(data, readonly) {
+    document.getElementById("voucherDate").value = data.voucherDate.substring(
+      0,
+      10,
+    );
+    document.getElementById("toWarehouse").value = data.toWarehouseId;
+    document.getElementById("note").value = data.note || "";
+
+    const tbody = document.getElementById("detail-body");
+    tbody.innerHTML = "";
+
+    data.details.forEach((d) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+      <td>
+        <select class="product" ${readonly ? "disabled" : ""}>
+          ${products
+            .map(
+              (p) =>
+                `<option value="${p.id}" ${
+                  p.id === d.productId ? "selected" : ""
+                }>${p.name}</option>`,
+            )
+            .join("")}
+        </select>
+      </td>
+      <td><input type="number" class="qty" value="${d.quantity}" ${readonly ? "disabled" : ""} /></td>
+      <td><input type="number" class="price" value="${d.price}" ${readonly ? "disabled" : ""} /></td>
+      <td>
+        ${
+          readonly
+            ? ""
+            : `<button class="btn-remove-row" onclick="this.closest('tr').remove()">✖</button>`
+        }
+      </td>
+    `;
+      tbody.appendChild(tr);
+    });
+
+    document
+      .querySelectorAll("#stockInModal input, #stockInModal select")
+      .forEach((el) => {
+        if (readonly) el.setAttribute("disabled", true);
+        else el.removeAttribute("disabled");
+      });
+
+    document.querySelectorAll("#stockInModal .btn-save").forEach((btn) => {
+      if (readonly) btn.setAttribute("disabled", true);
+      else btn.removeAttribute("disabled");
+    });
+
+    document.getElementById("stockInModal").classList.remove("hidden");
+  }
+
+  // HỦY DUYỆT NHẬP
+  async function cancelApproveStockIn() {
+    if (!selectedStockIn) return;
+
+    if (!confirm("Bạn chắc chắn muốn hủy duyệt phiếu này?")) return;
+
+    await fetchData(
+      `${API_BASE_URL}/stock-vouchers/${selectedStockIn.id}/cancel-approve`,
+      { method: "POST" },
+    );
+
+    loadStockIns();
+    showToast("Đã hủy duyệt phiếu nhập");
+  }
   /* ================= EXPORT FOR HTML ================= */
   window.openAddStockIn = openAddStockIn;
+  window.openViewStockIn = openViewStockIn;
+  window.openEditStockIn = openEditStockIn;
+  window.addDetailRow = addDetailRow;
   window.saveStockIn = saveStockIn;
   window.approveStockIn = approveStockIn;
+  window.cancelApproveStockIn = cancelApproveStockIn;
   window.searchStockIn = searchStockIn;
+  window.closeStockIn = closeStockIn;
 })();
