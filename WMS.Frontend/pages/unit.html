@@ -1,0 +1,86 @@
+<div class="card unit-page">
+  <div class="card-title">Danh mục đơn vị tính</div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar toolbar-flex">
+    <div class="toolbar-left">
+      <button class="btn btn-primary" onclick="openAddUnit()">Thêm</button>
+      <button
+        id="btnEditUnit"
+        class="btn btn-warning"
+        onclick="openEditUnit()"
+        disabled
+      >
+        Sửa
+      </button>
+      <button
+        id="btnDeleteUnit"
+        class="btn btn-danger"
+        onclick="deleteUnit()"
+        disabled
+      >
+        Xóa
+      </button>
+    </div>
+
+    <div class="toolbar-right">
+      <input
+        id="searchInput"
+        class="search-input"
+        placeholder="Tìm đơn vị tính..."
+        oninput="searchUnits()"
+      />
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Tên đơn vị</th>
+          <th style="width: 80px">Trạng thái</th>
+        </tr>
+      </thead>
+      <tbody id="unit-body"></tbody>
+    </table>
+  </div>
+
+  <!-- PAGINATION -->
+  <div class="pagination-fixed">
+    <!-- TRÁI: pagination -->
+    <div id="unit-pagination"></div>
+
+    <!-- PHẢI: page size -->
+    <select id="unitPageSize" onchange="changeUnitPageSize()">
+      <option value="5">5 / trang</option>
+      <option value="10">10 / trang</option>
+      <option value="20">20 / trang</option>
+      <option value="50">50 / trang</option>
+    </select>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="unitModal" class="modal hidden">
+  <div class="modal-content">
+    <h3 id="unitModalTitle">Đơn vị tính</h3>
+
+    <input type="hidden" id="unitId" />
+
+    <div class="form-group">
+      <label>Tên đơn vị</label>
+      <input type="text" id="unitName" />
+    </div>
+    <div class="form-group">
+      <label
+        ><input type="checkbox" id="unitIsActive" style="width: auto" /> Sử
+        dụng?</label
+      >
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="saveUnit()">Lưu</button>
+      <button class="btn" onclick="closeUnitModal()">Đóng</button>
+    </div>
+  </div>
+</div>

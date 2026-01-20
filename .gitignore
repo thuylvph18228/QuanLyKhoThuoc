@@ -1,0 +1,17 @@
+# ===== .NET =====
+bin/
+obj/
+.vs/
+*.user
+*.suo
+
+# ===== Node / FE =====
+node_modules/
+dist/
+
+# ===== ENV / CONFIG =====
+appsettings.Development.json
+.env
+
+# ===== OS =====
+Thumbs.db

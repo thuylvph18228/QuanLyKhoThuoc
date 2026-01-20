@@ -1,0 +1,17 @@
+curl -X 'POST' \
+  'https://localhost:44327/api/stock-vouchers' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "voucherType": "IN",
+  "voucherDate": "2026-01-19T09:57:41.200Z",
+  "toWarehouseId": 1,
+  "note": "",
+  "details": [
+    {
+      "productId": 6,
+      "quantity": 50,
+      "price": 30000
+    }
+  ]
+}'

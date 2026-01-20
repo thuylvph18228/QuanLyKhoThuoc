@@ -1,0 +1,91 @@
+<div class="card product-page">
+  <div class="card-title">Danh mục sản phẩm</div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar toolbar-flex">
+    <div class="toolbar-left">
+      <button class="btn btn-primary" onclick="openProductForm()">Thêm</button>
+      <button
+        id="btnEdit"
+        class="btn btn-warning"
+        onclick="editSelectedProduct()"
+        disabled
+      >
+        Sửa
+      </button>
+      <button
+        id="btnDelete"
+        class="btn btn-danger"
+        onclick="deleteSelectedProduct()"
+        disabled
+      >
+        Xóa
+      </button>
+    </div>
+
+    <div class="toolbar-right">
+      <input
+        id="searchInput"
+        class="search-input"
+        placeholder="Tìm sản phẩm..."
+        oninput="searchProducts()"
+      />
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Mã SP</th>
+          <th>Tên sản phẩm</th>
+          <th>Đơn vị</th>
+          <th>Giá</th>
+        </tr>
+      </thead>
+      <tbody id="product-body"></tbody>
+    </table>
+  </div>
+
+  <!-- PAGINATION CỐ ĐỊNH DƯỚI -->
+  <div class="pagination-fixed">
+    <div id="pagination"></div>
+
+    <select id="pageSizeSelect" onchange="changePageSize()">
+      <option value="5">5 / trang</option>
+      <option value="10">10 / trang</option>
+      <option value="20">20 / trang</option>
+      <option value="50">50 / trang</option>
+    </select>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="productModal" class="modal hidden">
+  <div class="modal-content">
+    <h3 id="modalTitle">Thêm sản phẩm</h3>
+
+    <input type="hidden" id="productId" />
+
+    <div class="form-group">
+      <label>Tên sản phẩm</label>
+      <input type="text" id="productName" />
+    </div>
+
+    <div class="form-group">
+      <label>Đơn vị</label>
+      <select id="productUnit" class="form-control"></select>
+    </div>
+
+    <div class="form-group">
+      <label>Giá</label>
+      <input type="number" id="productPrice" />
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="saveProduct()">Lưu</button>
+      <button class="btn" onclick="closeProductForm()">Đóng</button>
+    </div>
+  </div>
+</div>

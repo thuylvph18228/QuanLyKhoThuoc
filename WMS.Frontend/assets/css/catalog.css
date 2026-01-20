@@ -1,0 +1,101 @@
+/* ============================= */
+/* CATALOG - DÙNG CHUNG DANH MỤC */
+/* ============================= */
+
+.card.catalog-page {
+  height: calc(100vh - 140px);
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+}
+
+/* ===== TITLE ===== */
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+/* ===== TOOLBAR ===== */
+.catalog-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.catalog-toolbar-left,
+.catalog-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-input {
+  padding: 6px 10px;
+  width: 220px;
+  height: 32px;
+}
+
+/* ===== TABLE ===== */
+.catalog-table-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+}
+
+.catalog-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.catalog-table th {
+  position: sticky;
+  top: 0;
+  background: #f9fafb;
+  z-index: 1;
+}
+
+.catalog-table th,
+.catalog-table td {
+  padding: 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.catalog-table tbody tr {
+  cursor: pointer;
+}
+
+.catalog-table tbody tr:hover {
+  background: #f1f5f9;
+}
+
+.catalog-table tbody tr.selected {
+  background: #dbeafe;
+}
+
+/* ===== PAGINATION ===== */
+.catalog-pagination {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding: 8px 0;
+  border-top: 1px solid #e5e7eb;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.catalog-pagination-left {
+  display: flex;
+  gap: 6px;
+}
+
+.catalog-pagination-right select {
+  height: 32px;
+}

@@ -1,0 +1,91 @@
+<div class="card stock-page">
+  <div class="card-title">Phiếu nhập kho</div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar toolbar-flex">
+    <div>
+      <button class="btn btn-primary" onclick="openAddStockIn()">
+        Thêm phiếu
+      </button>
+      <button
+        class="btn btn-success"
+        onclick="approveStockIn()"
+        id="btnApprove"
+        disabled
+      >
+        Duyệt
+      </button>
+    </div>
+
+    <input
+      id="searchInput"
+      class="search-input"
+      placeholder="Tìm phiếu..."
+      oninput="searchStockIn()"
+    />
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Mã phiếu</th>
+          <th>Ngày</th>
+          <th>Kho nhập</th>
+          <th>Trạng thái</th>
+        </tr>
+      </thead>
+      <tbody id="stockin-body"></tbody>
+    </table>
+  </div>
+
+  <!-- PAGINATION -->
+  <div class="pagination-fixed">
+    <div id="stockin-pagination"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="stockInModal" class="modal hidden">
+  <div class="modal-content large">
+    <h3>Phiếu nhập kho</h3>
+
+    <!-- HEADER -->
+    <div class="form-grid">
+      <div>
+        <label>Ngày</label>
+        <input type="date" id="voucherDate" />
+      </div>
+      <div>
+        <label>Kho nhập</label>
+        <select id="toWarehouse"></select>
+      </div>
+      <div>
+        <label>Ghi chú</label>
+        <input id="note" />
+      </div>
+    </div>
+
+    <!-- DETAILS -->
+    <h4>Chi tiết</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Sản phẩm</th>
+          <th>Số lượng</th>
+          <th>Giá</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="detail-body"></tbody>
+    </table>
+
+    <button class="btn btn-light" onclick="addDetailRow()">+ Thêm dòng</button>
+
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="saveStockIn()">Lưu</button>
+      <button class="btn" onclick="closeStockIn()">Đóng</button>
+    </div>
+  </div>
+</div>

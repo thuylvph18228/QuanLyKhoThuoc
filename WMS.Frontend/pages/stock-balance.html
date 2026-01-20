@@ -1,0 +1,49 @@
+<div class="card">
+  <div class="card-title">Tồn kho</div>
+
+  <!-- FILTER -->
+  <div class="toolbar toolbar-flex">
+    <div>
+      <select id="filterWarehouse" onchange="loadStockBalances()">
+        <option value="">-- Tất cả kho --</option>
+      </select>
+
+      <select id="filterProduct" onchange="loadStockBalances()">
+        <option value="">-- Tất cả sản phẩm --</option>
+      </select>
+    </div>
+
+    <input
+      id="searchInput"
+      class="search-input"
+      placeholder="Tìm sản phẩm..."
+      oninput="renderStockBalances()"
+    />
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Kho</th>
+          <th>Sản phẩm</th>
+          <th>Đơn vị</th>
+          <th style="text-align: right">Tồn</th>
+        </tr>
+      </thead>
+      <tbody id="stock-body"></tbody>
+    </table>
+  </div>
+
+  <!-- PAGINATION -->
+  <div class="pagination-fixed">
+    <div id="stock-pagination"></div>
+
+    <select id="pageSize" onchange="changePageSize()">
+      <option value="10">10 / trang</option>
+      <option value="20">20 / trang</option>
+      <option value="50">50 / trang</option>
+    </select>
+  </div>
+</div>

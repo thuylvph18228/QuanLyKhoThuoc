@@ -1,0 +1,102 @@
+<div class="card warehouse-page">
+  <div class="card-title">Danh mục kho</div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar toolbar-flex">
+    <div class="toolbar-left">
+      <button class="btn btn-primary" onclick="openWarehouseForm()">
+        Thêm
+      </button>
+      <button
+        id="btnEditWarehouse"
+        class="btn btn-warning"
+        onclick="editSelectedWarehouse()"
+        disabled
+      >
+        Sửa
+      </button>
+      <button
+        id="btnDeleteWarehouse"
+        class="btn btn-danger"
+        onclick="deleteWarehouse()"
+        disabled
+      >
+        Xóa
+      </button>
+    </div>
+
+    <div class="toolbar-right">
+      <input
+        id="searchInput"
+        class="search-input"
+        placeholder="Tìm kho..."
+        oninput="searchWarehouses()"
+      />
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 140px">Mã kho</th>
+          <th>Tên kho</th>
+          <th>Địa chỉ</th>
+          <th style="width: 140px">Trạng thái</th>
+        </tr>
+      </thead>
+      <tbody id="warehouse-body"></tbody>
+    </table>
+  </div>
+
+  <!-- PAGINATION -->
+  <div class="pagination-fixed">
+    <!-- TRÁI: pagination -->
+    <div id="warehouse-pagination"></div>
+
+    <!-- PHẢI: page size -->
+    <select id="warehousePageSize" onchange="changeWarehousePageSize()">
+      <option value="5">5 / trang</option>
+      <option value="10">10 / trang</option>
+      <option value="20">20 / trang</option>
+      <option value="50">50 / trang</option>
+    </select>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="warehouseModal" class="modal hidden">
+  <div class="modal-content">
+    <h3 id="warehouseModalTitle">Kho</h3>
+
+    <input type="hidden" id="warehouseId" />
+
+    <div class="form-group">
+      <label>Mã kho</label>
+      <input type="text" id="whCode" />
+    </div>
+
+    <div class="form-group">
+      <label>Tên kho</label>
+      <input type="text" id="whName" />
+    </div>
+
+    <div class="form-group">
+      <label>Địa chỉ</label>
+      <input type="text" id="whAddress" />
+    </div>
+
+    <div class="form-group">
+      <label
+        ><input type="checkbox" id="whIsActive" style="width: auto" /> Sử
+        dụng?</label
+      >
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="saveWarehouse()">Lưu</button>
+      <button class="btn" onclick="closeWarehouseForm()">Đóng</button>
+    </div>
+  </div>
+</div>

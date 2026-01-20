@@ -1,0 +1,68 @@
+/* ================= KHO ================= */
+
+.warehouse-page {
+  height: calc(100vh - 140px);
+  display: flex;
+  flex-direction: column;
+}
+/* ===== TOOLBAR ===== */
+.warehouse-page .toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.warehouse-page .toolbar-left,
+.warehouse-page .toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-input {
+  padding: 6px 10px;
+  width: 220px;
+}
+
+/* ===== TABLE ===== */
+.table-wrapper {
+  flex: 1; /* 🔥 chiếm hết phần còn lại */
+  overflow-y: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+tbody tr {
+  cursor: pointer;
+}
+
+tbody tr.selected {
+  background: #dbeafe;
+}
+
+/* ===== PAGINATION CỐ ĐỊNH ===== */
+.pagination-fixed {
+  position: sticky; /* 🔥 cố định trong card */
+  bottom: 0;
+  background: #fff;
+  padding: 8px 0;
+  border-top: 1px solid #e5e7eb;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#warehouse-pagination {
+  display: flex;
+  gap: 6px;
+}
+
+#warehouse-pagination button {
+  margin: 0;
+}
