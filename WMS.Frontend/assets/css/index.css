@@ -273,3 +273,61 @@ select {
 .app-toast.error {
   background: #dc3545;
 }
+
+.user-menu {
+  position: relative;
+  cursor: pointer;
+}
+
+.user-dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: #24344d;
+  border: 1px solid #ddd;
+  min-width: 160px;
+  display: none;
+  z-index: 1000;
+}
+
+.user-dropdown div {
+  padding: 10px;
+}
+
+.user-dropdown div:hover {
+  background: #1b283b;
+}
+
+.user-menu:hover .user-dropdown {
+  display: block;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 2000;
+}
+
+.modal-content {
+  background: #fff;
+  width: 360px;
+  margin: 120px auto;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+.modal-content input {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+}
+
+.modal-actions {
+  text-align: right;
+}
+
+.modal-actions button {
+  margin-left: 6px;
+}

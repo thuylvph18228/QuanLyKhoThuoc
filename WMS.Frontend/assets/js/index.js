@@ -1,6 +1,10 @@
 // registry cho các page
 window.pageRegistry = {};
-
+// ===== AUTH CHECK =====
+const token = localStorage.getItem("token");
+if (!token) {
+  window.location.href = "pages/login.html";
+}
 /* ================= MENU TOGGLE ================= */
 function toggleMenu(el) {
   el.classList.toggle("open");
@@ -76,4 +80,60 @@ function loadPageCss(page) {
   link.href = `assets/css/${page}.css`;
 
   document.head.appendChild(link);
+}
+const fullName = localStorage.getItem("fullName") || "";
+const role = localStorage.getItem("role");
+
+const userEl = document.getElementById("userFullName");
+if (userEl) userEl.innerText = fullName;
+
+// Ẩn menu admin nếu không phải ADMIN
+document.querySelectorAll("[data-role='admin']").forEach((el) => {
+  if (role !== "ADMIN") el.style.display = "none";
+});
+
+localStorage.setItem("token", res.token);
+localStorage.setItem("fullName", res.fullName);
+
+document.getElementById("helloUser").innerText = "Xin chào, " + res.fullName;
+
+function openChangePassword() {
+  document.getElementById("changePasswordModal").classList.remove("hidden");
+}
+
+async function changePassword() {
+  const oldPassword = document.getElementById("oldPassword").value;
+  const newPassword = document.getElementById("newPassword").value;
+
+  const res = await fetch(`${API_BASE_URL}/auth/change-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+    body: JSON.stringify({
+      oldPassword,
+      newPassword,
+    }),
+  });
+
+  const text = await res.text();
+
+  if (res.ok) {
+    alert("Đổi mật khẩu thành công. Vui lòng đăng nhập lại");
+    logout();
+  } else {
+    alert(text);
+  }
+}
+
+function closeChangePassword() {
+  document.getElementById("changePasswordModal").classList.add("hidden");
+}
+
+function logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("fullName");
+
+  window.location.href = "pages/login.html";
 }

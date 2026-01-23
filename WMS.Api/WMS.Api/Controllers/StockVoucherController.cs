@@ -264,6 +264,136 @@ namespace WMS.Api.Controllers
             return Ok();
         }
 
+        [HttpGet("out")]
+        public async Task<IActionResult> GetStockOuts()
+        {
+            var data = await _db.StockVouchers
+                .Where(x => x.VoucherType == "OUT")
+                .Include(x => x.Details)
+                .OrderByDescending(x => x.CreatedAt)
+                .Select(x => new StockVoucherViewDto
+                {
+                    Id = x.Id,
+                    VoucherCode = x.VoucherCode,
+                    VoucherDate = x.VoucherDate,
+                    ToWarehouseId = x.FromWarehouseId, // ⚠️ dùng field này để FE hiển thị
+                    Status = x.Status,
+                    Note = x.Note,
+                    Details = x.Details.Select(d => new StockVoucherDetailDto
+                    {
+                        ProductId = d.ProductId,
+                        Quantity = d.Quantity,
+                        Price = d.Price
+                    }).ToList()
+                })
+                .ToListAsync();
+
+            return Ok(data);
+        }
+
+        [HttpPost("out")]
+        public async Task<IActionResult> CreateStockOut([FromBody] StockVoucherCreateDto dto)
+        {
+            var voucher = new StockVoucher
+            {
+                VoucherCode = $"PX{DateTime.Now:yyyyMMddHHmmss}",
+                VoucherType = "OUT",
+                VoucherDate = dto.VoucherDate,
+                FromWarehouseId = dto.ToWarehouseId, // ⚠️ dùng lại field
+                Note = dto.Note,
+                Status = "DRAFT"
+            };
+
+            foreach (var d in dto.Details)
+            {
+                voucher.Details.Add(new StockVoucherDetail
+                {
+                    ProductId = d.ProductId,
+                    Quantity = d.Quantity,
+                    Price = d.Price
+                });
+            }
+
+            _db.StockVouchers.Add(voucher);
+            await _db.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPost("{id}/approve-out")]
+        public async Task<IActionResult> ApproveStockOut(int id)
+        {
+            var voucher = await _db.StockVouchers
+                .Include(x => x.Details)
+                .FirstOrDefaultAsync(x =>
+                    x.Id == id &&
+                    x.VoucherType == "OUT");
+
+            if (voucher == null) return NotFound();
+            if (voucher.Status != "DRAFT")
+                return BadRequest("Phiếu đã duyệt");
+
+            foreach (var d in voucher.Details)
+            {
+                var balance = await _db.StockBalances.FirstOrDefaultAsync(x =>
+                    x.ProductId == d.ProductId &&
+                    x.WarehouseId == voucher.FromWarehouseId);
+
+                if (balance == null || balance.Quantity < d.Quantity)
+                    return BadRequest("Không đủ tồn kho");
+            }
+
+            // trừ tồn
+            foreach (var d in voucher.Details)
+            {
+                var balance = await _db.StockBalances.FirstAsync(x =>
+                    x.ProductId == d.ProductId &&
+                    x.WarehouseId == voucher.FromWarehouseId);
+
+                balance.Quantity -= d.Quantity;
+            }
+
+            voucher.Status = "APPROVED";
+            voucher.ApprovedAt = DateTime.Now;
+
+            await _db.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPost("{id}/cancel-approve-out")]
+        public async Task<IActionResult> CancelApproveStockOut(int id)
+        {
+            var voucher = await _db.StockVouchers
+                .Include(x => x.Details)
+                .FirstOrDefaultAsync(x =>
+                    x.Id == id && x.VoucherType == "OUT");
+
+            if (voucher == null)
+                return NotFound();
+
+            if (voucher.Status != "APPROVED")
+                return BadRequest("Phiếu chưa được duyệt");
+
+            foreach (var d in voucher.Details)
+            {
+                var balance = await _db.StockBalances.FirstOrDefaultAsync(x =>
+                    x.ProductId == d.ProductId &&
+                    x.WarehouseId == voucher.FromWarehouseId);
+
+                if (balance == null)
+                    return BadRequest("Không tìm thấy tồn kho");
+
+                balance.Quantity += d.Quantity;
+            }
+
+            voucher.Status = "DRAFT";
+            voucher.ApprovedAt = null;
+            voucher.ApprovedBy = null;
+
+            await _db.SaveChangesAsync();
+            return Ok();
+        }
+
 
     }
 }

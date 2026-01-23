@@ -1,19 +1,21 @@
 const API_BASE_URL = "https://localhost:44327/api";
 
 async function fetchData(url, options = {}) {
-  const res = await fetch(url, {
-    headers: { "Content-Type": "application/json" },
-    ...options,
-  });
+  const token = localStorage.getItem("token");
 
-  let data = null;
-  try {
-    data = await res.json();
-  } catch {}
+  options.headers = {
+    "Content-Type": "application/json",
+    ...(token && { Authorization: "Bearer " + token }),
+    ...options.headers,
+  };
 
-  if (!res.ok) {
-    throw new Error(data?.message || "Request failed");
+  const res = await fetch(url, options);
+
+  if (res.status === 401) {
+    localStorage.clear();
+    location.href = "pages/login.html";
+    return;
   }
 
-  return data;
+  return res.json();
 }

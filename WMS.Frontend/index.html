@@ -46,7 +46,7 @@
 
           <!-- DANH MỤC (MENU CHA) -->
           <div class="menu-item has-sub" onclick="toggleMenu(this)">
-            <i class="fa fa-list"></i>
+            <i class="fa fa-list" data-role="admin"></i>
             <span>Danh mục</span>
             <i class="fa fa-chevron-down arrow"></i>
           </div>
@@ -71,6 +71,9 @@
             <i class="fa fa-arrow-down"></i>
             <span> Nhập kho</span>
           </div>
+          <li class="menu-item" onclick="navigate('stock-out', this)">
+            Xuất kho
+          </li>
           <div class="menu-item" onclick="navigate('stock-balance', this)">
             <i class="fa fa-boxes-stacked"></i>
             <span> Tồn kho</span>
@@ -80,14 +83,23 @@
 
       <!-- MAIN -->
       <div class="main">
-        <div class="topbar">Xin chào, <strong>Administrator</strong></div>
+        <div class="topbar">
+          <div class="user-menu">
+            <span id="helloUser">Xin chào, Admin</span>
+
+            <div class="user-dropdown">
+              <div onclick="openChangePassword()">Đổi mật khẩu</div>
+              <div onclick="logout()">Đăng xuất</div>
+            </div>
+          </div>
+        </div>
 
         <!-- 🚨 CHỖ LOAD TRANG CON -->
         <div class="content" id="content">
           <!-- pages/dashboard.html sẽ load vào đây -->
         </div>
 
-        <div class="footer">© 2026 Hệ thống Quản lý Kho</div>
+        <footer>© 2026 Hệ thống Quản lý Kho</footer>
       </div>
     </div>
     <script src="./assets/js/api.js"></script>
@@ -95,5 +107,23 @@
     <script src="assets/js/basePagination.js"></script>
     <!-- 🔔 TOAST GLOBAL -->
     <div id="toast"></div>
+    <!-- CHANGE PASSWORD MODAL -->
+    <div id="changePasswordModal" class="modal hidden">
+      <div class="modal-content">
+        <h3>Đổi mật khẩu</h3>
+
+        <input type="password" id="oldPassword" placeholder="Mật khẩu cũ" />
+        <input type="password" id="newPassword" placeholder="Mật khẩu mới" />
+
+        <div class="modal-actions">
+          <button class="btn btn-primary" onclick="changePassword()">
+            Xác nhận
+          </button>
+          <button class="btn btn-secondary" onclick="closeChangePassword()">
+            Hủy
+          </button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

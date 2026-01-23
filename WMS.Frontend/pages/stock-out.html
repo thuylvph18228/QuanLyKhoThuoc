@@ -1,80 +1,49 @@
 <div class="card stock-page">
-  <div class="card-title">Phiếu nhập kho</div>
+  <div class="card-title">Phiếu xuất kho</div>
 
-  <!-- TOOLBAR -->
   <div class="toolbar toolbar-flex">
     <div>
-      <button class="btn btn-primary" onclick="openAddStockIn()">
+      <button class="btn btn-primary" onclick="openAddStockOut()">
         Thêm phiếu
       </button>
       <button
-        class="btn btn-warning"
-        onclick="openEditStockIn()"
-        id="btnEdit"
-        disabled
-      >
-        Sửa
-      </button>
-
-      <button
-        class="btn btn-secondary"
-        onclick="openViewStockIn()"
-        id="btnView"
-        disabled
-      >
-        Xem
-      </button>
-      <button
         class="btn btn-success"
-        onclick="approveStockIn()"
-        id="btnApprove"
+        onclick="approveStockOut()"
+        id="btnApproveOut"
         disabled
       >
         Duyệt
       </button>
-      <button
-        class="btn btn-danger"
-        onclick="cancelApproveStockIn()"
-        id="btnCancelApprove"
-        disabled
-      >
-        Hủy duyệt
-      </button>
     </div>
 
     <input
-      id="searchInput"
       class="search-input"
       placeholder="Tìm phiếu..."
-      oninput="searchStockIn()"
+      oninput="searchStockOut()"
     />
   </div>
 
-  <!-- TABLE -->
   <div class="table-wrapper">
     <table>
       <thead>
         <tr>
           <th>Mã phiếu</th>
           <th>Ngày</th>
-          <th>Kho nhập</th>
+          <th>Kho xuất</th>
           <th>Trạng thái</th>
         </tr>
       </thead>
-      <tbody id="stockin-body"></tbody>
+      <tbody id="stockout-body"></tbody>
     </table>
   </div>
 
-  <!-- PAGINATION -->
-  <div class="pagination-fixed">
-    <div id="stockin-pagination"></div>
-  </div>
+  <div id="stockout-pagination"></div>
 </div>
 
 <!-- MODAL -->
-<div id="stockInModal" class="modal hidden">
+<div id="stockOutModal" class="modal hidden">
   <div class="modal-content large">
-    <h3>Phiếu nhập kho</h3>
+    <h3>Phiếu xuất kho</h3>
     <!-- HEADER -->
     <div class="form-grid">
       <input type="hidden" id="voucherMode" value="IN" />
@@ -84,8 +53,8 @@
         <input type="date" id="voucherDate" />
       </div>
       <div>
-        <label>Kho nhập</label>
-        <select id="toWarehouse"></select>
+        <label>Kho xuất</label>
+        <select id="fromWarehouse"></select>
       </div>
       <div>
         <label>Ghi chú</label>
@@ -110,10 +79,10 @@
     <button class="btn btn-light" onclick="addDetailRow()">+ Thêm dòng</button>
 
     <div class="modal-actions">
-      <button class="btn btn-primary btn-save" onclick="saveStockIn()">
+      <button class="btn btn-primary btn-save" onclick="saveStockOut()">
         Lưu
       </button>
-      <button class="btn btn-secondary" onclick="closeStockIn()">Đóng</button>
+      <button class="btn btn-secondary" onclick="closeStockOut()">Đóng</button>
     </div>
   </div>
 </div>

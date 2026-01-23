@@ -4,33 +4,26 @@
 (function () {
   let products = [];
   let selectedProduct = null;
-  let productPage = 1;
-  let productPageSize = 5;
+  let page = 1;
+  let pageSize = 10;
 
-  /* ================= LOAD ================= */
+  /* ================= INIT ================= */
   async function initProductPage() {
     if (!document.getElementById("product-body")) return;
     await loadProducts();
   }
 
-  // 👉 ĐĂNG KÝ VỚI ROUTER
   window.pageRegistry["product"] = initProductPage;
 
-  /* ================= Products ================= */
+  /* ================= LOAD ================= */
   async function loadProducts() {
-    try {
-      const res = await fetch(`${API_BASE_URL}/products`);
-      products = await res.json();
-
-      productPage = 1;
-      renderProducts();
-    } catch (err) {
-      console.error(err);
-      showToast("Không tải được danh sách sản phẩm", "error");
-    }
+    const res = await fetch(`${API_BASE_URL}/products`);
+    products = await res.json();
+    page = 1;
+    renderProducts();
   }
 
-  /* ================= RENDER TABLE ================= */
+  /* ================= RENDER ================= */
   function renderProducts() {
     const keyword =
       document.getElementById("searchInput")?.value.toLowerCase() || "";
@@ -39,138 +32,136 @@
       p.name.toLowerCase().includes(keyword),
     );
 
-    const start = (productPage - 1) * productPageSize;
-    const pageData = filtered.slice(start, start + productPageSize);
+    const start = (page - 1) * pageSize;
+    const data = filtered.slice(start, start + pageSize);
 
     const tbody = document.getElementById("product-body");
-    if (!tbody) return;
-
     tbody.innerHTML = "";
     selectedProduct = null;
     updateToolbarState();
 
-    pageData.forEach((p) => {
+    data.forEach((p) => {
       const tr = document.createElement("tr");
-
       tr.innerHTML = `
-      <td>${p.id}</td>
-      <td>${p.name}</td>
-      <td>${p.unitName}</td>
-      <td>${p.price.toLocaleString()}</td>
-    `;
-
-      tr.addEventListener("click", () => selectProduct(tr, p));
-      tr.addEventListener("dblclick", () => openEditProduct(p));
-
+        <td>${p.id}</td>
+        <td>${p.name}</td>
+        <td>${p.unitName || ""}</td>
+        <td>${(p.price || 0).toLocaleString()}</td>
+      `;
+      tr.onclick = () => selectRow(tr, p);
+      tr.ondblclick = () => openEditProduct(p);
       tbody.appendChild(tr);
     });
 
     renderBasePagination({
       totalItems: filtered.length,
-      currentPage: productPage,
-      pageSize: productPageSize,
+      currentPage: page,
+      pageSize,
       containerId: "pagination",
-      onPageChange: (page) => {
-        productPage = page;
+      onPageChange: (p) => {
+        page = p;
         renderProducts();
       },
     });
   }
 
-  /* ================= SELECT ROW ================= */
-  function selectProduct(row, product) {
-    const isSelected = row.classList.contains("selected");
-
+  /* ================= SELECT ================= */
+  function selectRow(row, product) {
     document
       .querySelectorAll("#product-body tr")
       .forEach((tr) => tr.classList.remove("selected"));
 
-    if (isSelected) {
-      selectedProduct = null;
-    } else {
-      row.classList.add("selected");
-      selectedProduct = product;
-    }
-
+    row.classList.add("selected");
+    selectedProduct = product;
     updateToolbarState();
   }
 
-  /* ================= TOOLBAR ================= */
   function updateToolbarState() {
-    const btnEdit = document.getElementById("btnEdit");
-    const btnDelete = document.getElementById("btnDelete");
-
-    if (btnEdit) btnEdit.disabled = !selectedProduct;
-    if (btnDelete) btnDelete.disabled = !selectedProduct;
+    btnEdit.disabled = !selectedProduct;
+    btnDelete.disabled = !selectedProduct;
   }
 
   /* ================= SEARCH ================= */
-  function searchProducts() {
-    productPage = 1;
+  window.searchProducts = function () {
+    page = 1;
     renderProducts();
-  }
+  };
 
-  /* ================= PAGE SIZE ================= */
-  function changePageSize() {
-    productPageSize = Number(document.getElementById("pageSizeSelect").value);
-    productPage = 1;
+  window.changePageSize = function () {
+    pageSize = Number(pageSizeSelect.value);
+    page = 1;
     renderProducts();
+  };
+
+  /* ================= MODAL ================= */
+  window.openProductForm = async function () {
+    resetForm();
+    modalTitle.innerText = "Thêm sản phẩm";
+    await loadUnits();
+    productModal.classList.remove("hidden");
+  };
+
+  async function openEditProduct(p) {
+    resetForm();
+    modalTitle.innerText = "Sửa sản phẩm";
+
+    productId.value = p.id;
+    productName.value = p.name;
+    productPrice.value = p.price;
+    productCode.value = p.code || "";
+    manufacturer.value = p.manufacturer || "";
+    packing.value = p.packing || "";
+    description.value = p.description || "";
+
+    await loadUnits();
+    productUnit.value = p.unitId;
+
+    productModal.classList.remove("hidden");
   }
 
-  /* ================= ADD ================= */
-  async function openProductForm() {
-    selectedProduct = null;
-    updateToolbarState();
-
-    document.getElementById("modalTitle").innerText = "Thêm sản phẩm";
-    document.getElementById("productId").value = "";
-    document.getElementById("productName").value = "";
-    document.getElementById("productPrice").value = "";
-
-    const modal = document.getElementById("productModal");
-    modal.classList.remove("hidden");
-
-    await loadUnitOptions();
-    document.getElementById("productUnit").value = "";
-  }
-
-  /* ================= EDIT ================= */
-  async function openEditProduct(product) {
-    selectedProduct = product;
-    updateToolbarState();
-
-    document.getElementById("modalTitle").innerText = "Sửa sản phẩm";
-    document.getElementById("productId").value = product.id;
-    document.getElementById("productName").value = product.name;
-    await loadUnitOptions();
-    document.getElementById("productUnit").value = product.unitId;
-    document.getElementById("productPrice").value = product.price;
-
-    document.getElementById("productModal").classList.remove("hidden");
-  }
-
-  function editSelectedProduct() {
-    if (!selectedProduct) {
-      showToast("Vui lòng chọn sản phẩm để sửa", "error");
-      return;
-    }
+  window.editSelectedProduct = function () {
+    if (!selectedProduct) return;
     openEditProduct(selectedProduct);
+  };
+
+  window.closeProductForm = function () {
+    productModal.classList.add("hidden");
+  };
+
+  function resetForm() {
+    document.querySelectorAll(".tab-btn").forEach((b, i) => {
+      b.classList.toggle("active", i === 0);
+    });
+    document.querySelectorAll(".tab-content").forEach((c, i) => {
+      c.classList.toggle("active", i === 0);
+    });
+
+    productId.value = "";
+    productName.value = "";
+    productPrice.value = "";
+    productCode.value = "";
+    manufacturer.value = "";
+    packing.value = "";
+    description.value = "";
   }
 
   /* ================= SAVE ================= */
-  async function saveProduct() {
-    const name = document.getElementById("productName").value.trim();
-    const unitId = Number(document.getElementById("productUnit").value);
-    const price = Number(document.getElementById("productPrice").value);
+  window.saveProduct = async function () {
+    const payload = {
+      name: productName.value.trim(),
+      unitId: Number(productUnit.value),
+      price: Number(productPrice.value),
+      code: productCode.value,
+      manufacturer: manufacturer.value,
+      packing: packing.value,
+      description: description.value,
+    };
 
-    if (!name) return showToast("Tên sản phẩm không được để trống", "error");
-    if (!unitId) return showToast("Vui lòng chọn đơn vị tính", "error");
-    if (isNaN(price) || price <= 0)
-      return showToast("Giá phải lớn hơn 0", "error");
+    if (!payload.name || !payload.unitId || payload.price <= 0) {
+      return showToast("Dữ liệu không hợp lệ", "error");
+    }
 
-    const payload = { name, unitId, price };
-    const id = document.getElementById("productId").value;
-
+    const id = productId.value;
     await fetch(`${API_BASE_URL}/products${id ? "/" + id : ""}`, {
       method: id ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
@@ -179,51 +170,45 @@
 
     closeProductForm();
     loadProducts();
-    showToast("Lưu sản phẩm thành công", "success");
-  }
+    showToast("Lưu thành công", "success");
+  };
 
   /* ================= DELETE ================= */
-  async function deleteSelectedProduct() {
-    if (!selectedProduct)
-      return showToast("Vui lòng chọn sản phẩm để xóa", "error");
-
-    if (!confirm(`Xóa sản phẩm "${selectedProduct.name}" ?`)) return;
+  window.deleteSelectedProduct = async function () {
+    if (!selectedProduct) return;
+    if (!confirm(`Xóa "${selectedProduct.name}" ?`)) return;
 
     await fetch(`${API_BASE_URL}/products/${selectedProduct.id}`, {
       method: "DELETE",
     });
 
     loadProducts();
-    showToast("Đã xóa sản phẩm", "success");
-  }
+    showToast("Đã xóa", "success");
+  };
 
-  /* ================= MODAL ================= */
-  function closeProductForm() {
-    document.getElementById("productModal").classList.add("hidden");
-  }
-
-  /* ================= Units ================= */
-  async function loadUnitOptions() {
-    const select = document.getElementById("productUnit");
-    if (!select) return;
-
+  /* ================= UNITS ================= */
+  async function loadUnits() {
     const res = await fetch(`${API_BASE_URL}/units`);
     const data = await res.json();
 
-    select.innerHTML = `<option value="">-- Chọn đơn vị --</option>`;
+    productUnit.innerHTML = `<option value="">-- Chọn đơn vị --</option>`;
     data.forEach((u) => {
-      const opt = document.createElement("option");
-      opt.value = u.id;
-      opt.textContent = u.name;
-      select.appendChild(opt);
+      productUnit.innerHTML += `<option value="${u.id}">${u.name}</option>`;
     });
   }
-  // EXPORT
-  window.searchProducts = searchProducts;
-  window.changePageSize = changePageSize;
-  window.openProductForm = openProductForm;
-  window.closeProductForm = closeProductForm;
-  window.editSelectedProduct = editSelectedProduct;
-  window.saveProduct = saveProduct;
-  window.deleteSelectedProduct = deleteSelectedProduct;
+
+  /* ================= TABS ================= */
+  document.addEventListener("click", (e) => {
+    if (!e.target.classList.contains("tab-btn")) return;
+
+    document
+      .querySelectorAll(".tab-btn")
+      .forEach((b) => b.classList.remove("active"));
+    document
+      .querySelectorAll(".tab-content")
+      .forEach((c) => c.classList.remove("active"));
+
+    e.target.classList.add("active");
+    document.getElementById(e.target.dataset.tab).classList.add("active");
+  });
 })();

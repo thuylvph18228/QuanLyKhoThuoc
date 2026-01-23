@@ -1,40 +1,13 @@
-/* ================= SẢN PHẨM ================= */
-
+/* ===== PRODUCT PAGE ===== */
 .product-page {
   height: calc(100vh - 140px);
   display: flex;
   flex-direction: column;
 }
-/* ===== TOOLBAR ===== */
-.product-page .toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
 
-.product-page .toolbar-left,
-.product-page .toolbar-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.search-input {
-  padding: 6px 10px;
-  width: 220px;
-}
-
-/* ===== TABLE ===== */
 .table-wrapper {
-  flex: 1; /* 🔥 chiếm hết phần còn lại */
+  flex: 1;
   overflow-y: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
 }
 
 tbody tr {
@@ -43,6 +16,65 @@ tbody tr {
 
 tbody tr.selected {
   background: #dbeafe;
+}
+
+/* ===== MODAL ===== */
+.modal-lg {
+  width: 900px;
+  max-width: 95%;
+}
+
+/* ===== TABS ===== */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 12px;
+}
+
+.tab-btn {
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.tab-btn.active {
+  color: #2563eb;
+  border-bottom: 2px solid #2563eb;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* ===== FORM GRID ===== */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+}
+
+.form-group.full {
+  grid-column: span 2;
+}
+
+.form-group label {
+  font-size: 13px;
+  margin-bottom: 4px;
+  display: block;
+}
+
+/* ===== TOOLBAR ===== */
+.product-page .toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 /* ===== PAGINATION CỐ ĐỊNH ===== */

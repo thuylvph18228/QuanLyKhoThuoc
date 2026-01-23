@@ -48,41 +48,80 @@
     </table>
   </div>
 
-  <!-- PAGINATION CỐ ĐỊNH DƯỚI -->
+  <!-- PAGINATION -->
   <div class="pagination-fixed">
     <div id="pagination"></div>
 
     <select id="pageSizeSelect" onchange="changePageSize()">
       <option value="5">5 / trang</option>
-      <option value="10">10 / trang</option>
+      <option value="10" selected>10 / trang</option>
       <option value="20">20 / trang</option>
       <option value="50">50 / trang</option>
     </select>
   </div>
 </div>
 
-<!-- MODAL -->
+<!-- ================= MODAL PRODUCT ================= -->
 <div id="productModal" class="modal hidden">
-  <div class="modal-content">
+  <div class="modal-content modal-lg">
     <h3 id="modalTitle">Thêm sản phẩm</h3>
 
-    <input type="hidden" id="productId" />
-
-    <div class="form-group">
-      <label>Tên sản phẩm</label>
-      <input type="text" id="productName" />
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="tab-main">
+        Thông tin chính
+      </button>
+      <button class="tab-btn" data-tab="tab-extra">Thông tin bổ sung</button>
     </div>
 
-    <div class="form-group">
-      <label>Đơn vị</label>
-      <select id="productUnit" class="form-control"></select>
+    <!-- TAB MAIN -->
+    <div class="tab-content active" id="tab-main">
+      <input type="hidden" id="productId" />
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Tên sản phẩm *</label>
+          <input type="text" id="productName" />
+        </div>
+
+        <div class="form-group">
+          <label>Đơn vị *</label>
+          <select id="productUnit"></select>
+        </div>
+
+        <div class="form-group">
+          <label>Giá bán *</label>
+          <input type="number" id="productPrice" />
+        </div>
+
+        <div class="form-group">
+          <label>Mã sản phẩm</label>
+          <input type="text" id="productCode" />
+        </div>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label>Giá</label>
-      <input type="number" id="productPrice" />
+    <!-- TAB EXTRA -->
+    <div class="tab-content" id="tab-extra">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nhà sản xuất</label>
+          <input type="text" id="manufacturer" />
+        </div>
+
+        <div class="form-group">
+          <label>Quy cách</label>
+          <input type="text" id="packing" />
+        </div>
+
+        <div class="form-group full">
+          <label>Mô tả</label>
+          <textarea id="description" rows="3"></textarea>
+        </div>
+      </div>
     </div>
 
+    <!-- ACTION -->
     <div class="modal-actions">
       <button class="btn btn-primary" onclick="saveProduct()">Lưu</button>
       <button class="btn" onclick="closeProductForm()">Đóng</button>

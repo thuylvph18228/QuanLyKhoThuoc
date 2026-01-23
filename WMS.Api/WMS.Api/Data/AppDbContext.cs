@@ -14,6 +14,8 @@ namespace WMS.Api.Data
         public DbSet<StockVoucher> StockVouchers { get; set; }
         public DbSet<StockVoucherDetail> StockVoucherDetails { get; set; }
         public DbSet<StockBalance> StockBalances { get; set; }
+        public DbSet<User> Users => Set<User>();
+
 
     }
 }
