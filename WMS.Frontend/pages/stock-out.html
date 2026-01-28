@@ -7,12 +7,37 @@
         Thêm phiếu
       </button>
       <button
+        class="btn btn-warning"
+        onclick="openEditStockOut()"
+        id="btnEdit"
+        disabled
+      >
+        Sửa
+      </button>
+
+      <button
+        class="btn btn-secondary"
+        onclick="openViewStockOut()"
+        id="btnView"
+        disabled
+      >
+        Xem
+      </button>
+      <button
         class="btn btn-success"
         onclick="approveStockOut()"
         id="btnApproveOut"
         disabled
       >
         Duyệt
+      </button>
+      <button
+        class="btn btn-danger"
+        onclick="cancelApproveStockOut()"
+        id="btnCancelApprove"
+        disabled
+      >
+        Hủy duyệt
       </button>
     </div>
 

@@ -12,7 +12,6 @@
   /* ================= INIT ================= */
   async function initStockInPage() {
     if (!document.getElementById("stockin-body")) return;
-    await loadBaseData();
     await loadStockIns();
   }
 
@@ -107,6 +106,7 @@
     document.getElementById("voucherDate").valueAsDate = new Date();
     document.getElementById("note").value = "";
     document.getElementById("detail-body").innerHTML = "";
+    loadBaseData();
     addDetailRow();
     document.getElementById("stockInModal").classList.remove("hidden");
   }

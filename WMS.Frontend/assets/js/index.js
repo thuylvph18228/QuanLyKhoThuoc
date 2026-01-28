@@ -104,6 +104,17 @@ function openChangePassword() {
 async function changePassword() {
   const oldPassword = document.getElementById("oldPassword").value;
   const newPassword = document.getElementById("newPassword").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  if (!oldPassword || !newPassword || !confirmPassword) {
+    alert("Vui lòng nhập đầy đủ thông tin");
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    alert("Mật khẩu xác nhận không khớp");
+    return;
+  }
 
   const res = await fetch(`${API_BASE_URL}/auth/change-password`, {
     method: "POST",
@@ -125,6 +136,11 @@ async function changePassword() {
   } else {
     alert(text);
   }
+}
+
+function togglePassword(el) {
+  const input = el.previousElementSibling;
+  input.type = input.type === "password" ? "text" : "password";
 }
 
 function closeChangePassword() {

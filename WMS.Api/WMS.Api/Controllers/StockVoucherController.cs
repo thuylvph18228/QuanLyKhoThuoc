@@ -271,14 +271,18 @@ namespace WMS.Api.Controllers
                 .Where(x => x.VoucherType == "OUT")
                 .Include(x => x.Details)
                 .OrderByDescending(x => x.CreatedAt)
-                .Select(x => new StockVoucherViewDto
+                .Select(x => new 
                 {
-                    Id = x.Id,
-                    VoucherCode = x.VoucherCode,
-                    VoucherDate = x.VoucherDate,
-                    ToWarehouseId = x.FromWarehouseId, // ⚠️ dùng field này để FE hiển thị
-                    Status = x.Status,
-                    Note = x.Note,
+                    x.Id,
+                    x.VoucherCode,
+                    x.VoucherDate,
+                    x.FromWarehouseId, // ⚠️ dùng field này để FE hiển thị
+                    FromWarehouseName = _db.Warehouses
+                        .Where(w => w.Id == x.FromWarehouseId)
+                        .Select(w => w.Name)
+                        .FirstOrDefault(),
+                    x.Status,
+                    x.Note,
                     Details = x.Details.Select(d => new StockVoucherDetailDto
                     {
                         ProductId = d.ProductId,
@@ -357,7 +361,7 @@ namespace WMS.Api.Controllers
             voucher.ApprovedAt = DateTime.Now;
 
             await _db.SaveChangesAsync();
-            return Ok();
+            return Ok(new { message = "Approved" });
         }
 
         [HttpPost("{id}/cancel-approve-out")]

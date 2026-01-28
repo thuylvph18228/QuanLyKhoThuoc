@@ -17,5 +17,6 @@ async function fetchData(url, options = {}) {
     return;
   }
 
-  return res.json();
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
 }

@@ -74,7 +74,7 @@ namespace WMS.Api.Controllers
             var user = new User
             {
                 Username = dto.Username,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password), // 🔥 CHUẨN
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 FullName = dto.FullName,
                 Role = "User",
                 IsActive = true

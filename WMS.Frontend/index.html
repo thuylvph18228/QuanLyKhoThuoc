@@ -67,16 +67,25 @@
               <i class="fa fa-layer-group"></i> Nhóm hàng
             </div>
           </div>
-          <div class="menu-item" onclick="navigate('stock-in', this)">
-            <i class="fa fa-arrow-down"></i>
-            <span> Nhập kho</span>
+          <!-- DANH MỤC (MENU CHA) -->
+          <div class="menu-item has-sub" onclick="toggleMenu(this)">
+            <i class="fa fa-list" data-role="admin"></i>
+            <span>Quản lý kho</span>
+            <i class="fa fa-chevron-down arrow"></i>
           </div>
-          <li class="menu-item" onclick="navigate('stock-out', this)">
-            Xuất kho
-          </li>
-          <div class="menu-item" onclick="navigate('stock-balance', this)">
-            <i class="fa fa-boxes-stacked"></i>
-            <span> Tồn kho</span>
+          <div class="submenu">
+            <div class="submenu-item" onclick="navigate('stock-in', this)">
+              <i class="fa fa-arrow-down"></i>
+              <span> Nhập kho</span>
+            </div>
+            <li class="submenu-item" onclick="navigate('stock-out', this)">
+              <i class="fa fa-arrow-up"></i>
+              <span>Xuất kho</span>
+            </li>
+            <div class="submenu-item" onclick="navigate('stock-balance', this)">
+              <i class="fa fa-boxes-stacked"></i>
+              <span> Tồn kho</span>
+            </div>
           </div>
         </div>
       </aside>
@@ -99,7 +108,7 @@
           <!-- pages/dashboard.html sẽ load vào đây -->
         </div>
 
-        <footer>© 2026 Hệ thống Quản lý Kho</footer>
+        <footer class="footer">© 2026 Hệ thống Quản lý Kho</footer>
       </div>
     </div>
     <script src="./assets/js/api.js"></script>
@@ -110,10 +119,32 @@
     <!-- CHANGE PASSWORD MODAL -->
     <div id="changePasswordModal" class="modal hidden">
       <div class="modal-content">
-        <h3>Đổi mật khẩu</h3>
+        <h3>🔒 Đổi mật khẩu</h3>
 
-        <input type="password" id="oldPassword" placeholder="Mật khẩu cũ" />
-        <input type="password" id="newPassword" placeholder="Mật khẩu mới" />
+        <div class="form-group">
+          <label>Mật khẩu cũ</label>
+          <div class="password-box">
+            <input type="password" id="oldPassword" />
+            <span onclick="togglePassword(this)">👁️</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Mật khẩu mới</label>
+          <div class="password-box">
+            <input type="password" id="newPassword" />
+            <span onclick="togglePassword(this)">👁️</span>
+          </div>
+          <small id="passwordStrength"></small>
+        </div>
+
+        <div class="form-group">
+          <label>Xác nhận mật khẩu mới</label>
+          <div class="password-box">
+            <input type="password" id="confirmPassword" />
+            <span onclick="togglePassword(this)">👁️</span>
+          </div>
+        </div>
 
         <div class="modal-actions">
           <button class="btn btn-primary" onclick="changePassword()">

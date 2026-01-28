@@ -10,5 +10,6 @@
         public string UnitName { get; set; } = null!;
 
         public decimal Quantity { get; set; }
+        public decimal InPrice { get; set; }
     }
 }
